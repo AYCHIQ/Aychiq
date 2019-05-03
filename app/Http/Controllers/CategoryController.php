@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Category;
 use App\Http\Requests\CategoryRequest;
+use App\Http\Resources\Category as CategoryResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -13,12 +14,13 @@ class CategoryController extends Controller
     {
         $attributes = $categoryRequest->validated();
 
-        $category = DB::table('category')->insert($attributes);
+        $category = Category::create($attributes);
 
-        if ($category):
+        if (!is_null($category)):
             return response()->json([
                 'status' => 'success',
-                'message' => 'Saved Successfully'
+                'message' => 'Saved Successfully',
+                'data' => new CategoryResource($category),
             ]);
         else:
             return response()->json([

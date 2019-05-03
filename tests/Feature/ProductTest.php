@@ -28,9 +28,11 @@ class ProductTest extends TestCase
         ];
 
         $response = $this->post('/api/products', $attributes);
+
         $response->assertJson([
             'status' => 'success',
-            'message' => 'Saved Successfully'
+            'message' => 'Saved Successfully',
+            'data' => $attributes,
         ]);
 
         $this->assertDatabaseHas('products', $attributes);

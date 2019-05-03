@@ -31,7 +31,8 @@ class CategoryTest extends TestCase
 
         $response->assertJson([
             'status' => 'success',
-            'message' => 'Saved Successfully'
+            'message' => 'Saved Successfully',
+            'data' => $attributes,
         ]);
 
         $this->assertDatabaseHas('category', $attributes);

@@ -3,21 +3,23 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProductsRequest;
+use App\Product;
+use App\Http\Resources\Product as ProductResources;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use mysql_xdevapi\Exception;
 
 class ProductController extends Controller
 {
     public function create(ProductsRequest $productsRequest)
     {
         $attributes = $productsRequest->validated();
-        $products = DB::table('products')->insert($attributes);
+        $products = Product::create($attributes);
 
-        if ($products):
+        if (!is_null($products)):
             return response()->json([
                 'status' => 'success',
-                'message' => 'Saved Successfully'
+                'message' => 'Saved Successfully',
+                'data' => new ProductResources($products),
             ]);
         else:
             return response()->json([
