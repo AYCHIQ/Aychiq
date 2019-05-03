@@ -2,20 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use App\Category;
-use App\Http\Requests\CategoryRequest;
+use App\Http\Requests\ProductsRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use mysql_xdevapi\Exception;
 
-class CategoryController extends Controller
+class ProductController extends Controller
 {
-    public function create(CategoryRequest $categoryRequest)
+    public function create(ProductsRequest $productsRequest)
     {
-        $attributes = $categoryRequest->validated();
+        $attributes = $productsRequest->validated();
+        $products = DB::table('products')->insert($attributes);
 
-        $category = DB::table('category')->insert($attributes);
-
-        if ($category):
+        if ($products):
             return response()->json([
                 'status' => 'success',
                 'message' => 'Saved Successfully'
@@ -26,7 +25,6 @@ class CategoryController extends Controller
                 'error' => 'Insert Error'
             ]);
         endif;
-
 
     }
 }
