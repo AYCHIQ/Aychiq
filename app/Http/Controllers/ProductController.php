@@ -5,15 +5,22 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ProductsRequest;
 use App\Product;
 use App\Http\Resources\Product as ProductResources;
+use App\Repository\Imageble\ImagebleHelper;
 
 class ProductController extends Controller
 {
+    use ImagebleHelper;
+
     public function create(ProductsRequest $productsRequest)
     {
         $attributes = $productsRequest->validated();
         $products = Product::create($attributes);
 
+
         if (!is_null($products)):
+
+            $this->insert_images('product', $products->id);
+
             return response()->json([
                 'status' => 'success',
                 'message' => 'Saved Successfully',

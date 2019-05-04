@@ -4,6 +4,7 @@
 namespace App\Repository\Imageble;
 
 use App\Imageble;
+use App\Images;
 
 trait ImagebleHelper
 {
@@ -13,8 +14,7 @@ trait ImagebleHelper
         $images = request('images');
         $imageble = app()->make(Imageble::class);
 
-
-        if (empty($images)):
+        if (empty($images) || !$this->is_image_exist($images)):
             return;
         endif;
 
@@ -29,5 +29,11 @@ trait ImagebleHelper
         endforeach;
 
         $imageble->insert($data);
+    }
+
+    public function is_image_exist($images)
+    {
+        $images = Images::whereIn('id', $images)->get()->toArray();
+        return empty($images) ? false : true;
     }
 }

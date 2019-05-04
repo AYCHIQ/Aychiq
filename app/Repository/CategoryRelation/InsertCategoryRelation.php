@@ -24,6 +24,7 @@ class InsertCategoryRelation
             return;
         endif;
 
+
         foreach ($categories as $category):
             $category_relations[] = ['products_id' => $product_id, 'category_id' => abs($category)];
         endforeach;

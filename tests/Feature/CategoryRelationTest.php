@@ -20,6 +20,7 @@ class CategoryRelationTest extends TestCase
      */
     public function can_save_category_relation_with_add_product()
     {
+        $this->withoutExceptionHandling();
         $cat = factory(Category::class)->create([
             'name' => 'cat'
         ]);

@@ -3,6 +3,8 @@
 namespace Tests\Feature;
 
 use App\Category;
+use App\Images;
+use App\Product;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -130,6 +132,43 @@ class ProductTest extends TestCase
                 ]
             ]
         ]);
+
+    }
+
+
+    /**
+     * @test
+     */
+
+
+    public function can_upload_image_with_product()
+    {
+        $this->withoutExceptionHandling();
+
+        $dog = factory(Images::class)->create([
+            'image_url' => 'category/ZjXLGo4S4g8J4Oli3Grgu9wyN8UOaGtiBTbB4WRd.jpeg'
+        ]);
+
+
+        $cat = factory(Images::class)->create([
+            'image_url' => 'category/QXTMVNdyIfiQZp3OJ38140oqWHAO3hTHXOtcvT85.jpeg'
+        ]);
+
+        $attributes = [
+            'title' => $this->faker->sentence,
+            'description' => $this->faker->paragraph,
+            'sku' => 5,
+            'images' => [$dog->id, $cat->id],
+        ];
+
+        $response = $this->post('/api/products', $attributes);
+
+        $json_response = json_decode($response->getContent());
+
+        $products = Product::where('id', $json_response->data->id)->get()->first();
+
+        $this->assertCount(2, $products->images);
+        $this->assertEquals('category/QXTMVNdyIfiQZp3OJ38140oqWHAO3hTHXOtcvT85.jpeg', $products->images[1]->image_url);
 
     }
 

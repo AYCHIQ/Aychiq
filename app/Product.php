@@ -12,4 +12,9 @@ class Product extends Model
     {
         return $this->belongsToMany(Category::class, 'category_relations', 'products_id', 'category_id');
     }
+
+    public function images()
+    {
+        return $this->morphToMany('App\Images', 'imageble');
+    }
 }
