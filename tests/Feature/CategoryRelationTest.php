@@ -28,10 +28,6 @@ class CategoryRelationTest extends TestCase
             'name' => 'dog'
         ]);
 
-//        $products = factory(Product::class)->create([
-//            'category' => [$cat->id, $dog->id]
-//        ]);
-
         $attributes = [
             'title' => $this->faker->sentence,
             'description' => $this->faker->paragraph,
@@ -41,9 +37,14 @@ class CategoryRelationTest extends TestCase
 
         $response = $this->post('/api/products', $attributes);
 
-        dd($response->getContent());
+        $response_json = json_decode($response->getContent());
 
-        $this->assertCount(2, $products->category);
+        $product = Product::where('id', $response_json->data->id)->get()->first();
+
+        $this->assertCount(2, $product->category);
+
+        $this->assertEquals($cat->id, $product->category[0]->id);
+        $this->assertEquals($dog->id, $product->category[1]->id);
 
     }
 
