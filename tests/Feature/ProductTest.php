@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Category;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -77,4 +78,59 @@ class ProductTest extends TestCase
         $response->assertStatus(302);
         $response->assertSessionHasErrors('sku');
     }
+
+
+    /**
+     * @test
+     */
+
+    public function product_must_have_return_category_with_category()
+    {
+        $this->withoutExceptionHandling();
+
+        $cat = factory(Category::class)->create([
+            'name' => 'cat'
+        ]);
+
+        $dog = factory(Category::class)->create([
+            'name' => 'dog'
+        ]);
+
+        $attributes = [
+            'title' => $this->faker->sentence,
+            'description' => $this->faker->paragraph,
+            'sku' => 5,
+            'category' => [$cat->id, $dog->id]
+        ];
+
+        $response = $this->post('/api/products', $attributes);
+        $response->assertStatus(200);
+
+        $response_json = json_decode($response->getContent());
+
+        $response->assertJson([
+            'status' => 'success',
+            'message' => 'Saved Successfully',
+            'data' => [
+                'id' => $response_json->data->id,
+                'title' => $response_json->data->title,
+                'description' => $response_json->data->description,
+                'sku' => 5,
+                'category' => [
+                    [
+                        "id" => $cat->id,
+                        "name" => $cat->name,
+                        "description" => $cat->description
+                    ],
+                    [
+                        "id" => $dog->id,
+                        "name" => $dog->name,
+                        "description" => $dog->description
+                    ]
+                ]
+            ]
+        ]);
+
+    }
+
 }

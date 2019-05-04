@@ -14,11 +14,17 @@ class Product extends JsonResource
      */
     public function toArray($request)
     {
-        return [
+        $products = [
             'id' => $this->id,
             'title' => $this->title,
             'description' => $this->description,
             'sku' => $this->sku,
         ];
+
+        if (!empty($this->category)):
+            $products['category'] = new CategoryCollection($this->category);
+        endif;
+
+        return $products;
     }
 }

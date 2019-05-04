@@ -2,6 +2,8 @@
 
 namespace Tests\Feature;
 
+use App\Category;
+use App\Images;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -57,6 +59,41 @@ class CategoryTest extends TestCase
         $response->assertSessionHasErrors('name');
 
         $this->assertDatabaseMissing('category', $attributes);
+
+    }
+
+
+    /**
+     * @test
+     */
+
+
+    public function can_upload_image_with_category()
+    {
+        $this->withoutExceptionHandling();
+
+        $dog = factory(Images::class)->create([
+            'image_url' => 'category/ZjXLGo4S4g8J4Oli3Grgu9wyN8UOaGtiBTbB4WRd.jpeg'
+        ]);
+
+
+        $cat = factory(Images::class)->create([
+            'image_url' => 'category/QXTMVNdyIfiQZp3OJ38140oqWHAO3hTHXOtcvT85.jpeg'
+        ]);
+
+        $attributes = [
+            'name' => $this->faker->sentence,
+            'description' => $this->faker->paragraph,
+            'images' => [$cat->id, $dog->id]
+        ];
+
+        $response = $this->post('/api/category', $attributes);
+
+        $json_response = json_decode($response->getContent());
+
+        $category = Category::where('id', $json_response->data->id)->get()->first();
+
+        $this->assertCount(2, $category->images);
 
     }
 }
