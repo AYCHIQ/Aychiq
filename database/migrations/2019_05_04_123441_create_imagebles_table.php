@@ -20,6 +20,14 @@ class CreateImageblesTable extends Migration
             $table->string('imageble_type');
             $table->timestamps();
         });
+
+        Schema::table('imagebles', function ($table) {
+            $table->foreign('images_id')
+                ->references('id')
+                ->on('images')
+                ->onDelete('cascade');
+
+        });
     }
 
     /**

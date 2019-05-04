@@ -17,6 +17,12 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::post('/category', 'CategoryController@create');
 Route::post('/products', 'ProductController@create');
+Route::delete('/products/{product}', 'ProductController@delete');
+
+
+Route::post('/category', 'CategoryController@create');
+Route::delete('/category/{category}', 'CategoryController@delete');
+
+
 Route::post('/category_image', 'CategoryImageController@upload');

@@ -96,4 +96,33 @@ class CategoryTest extends TestCase
         $this->assertCount(2, $category->images);
 
     }
+
+    /**
+     * @test
+     */
+
+
+    public function can_delete_category()
+    {
+        $this->withoutExceptionHandling();
+
+        $attributes = [
+            'name' => $this->faker->sentence,
+            'description' => $this->faker->paragraph,
+        ];
+
+        $category = factory(Category::class)->create($attributes);
+
+        $response = $this->delete("/api/category/{$category->id}");
+
+        $response->assertJson([
+            'status' => 'success',
+            'message' => 'Delete Successfully',
+            'data' => [
+                'id' => $category->id,
+            ]
+        ]);
+
+        $this->assertDatabaseMissing('category', $attributes);
+    }
 }

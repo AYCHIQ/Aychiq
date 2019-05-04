@@ -34,4 +34,17 @@ class ProductController extends Controller
         endif;
 
     }
+
+    public function delete(Product $product)
+    {
+        $product->delete();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Delete Successfully',
+            'data' => [
+                'id' => $product->id,
+            ],
+        ]);
+    }
 }

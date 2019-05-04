@@ -172,4 +172,35 @@ class ProductTest extends TestCase
 
     }
 
+
+    /**
+     * @test
+     */
+
+
+    public function can_delete_product()
+    {
+        $this->withoutExceptionHandling();
+
+        $attributes = [
+            'title' => $this->faker->sentence,
+            'description' => $this->faker->paragraph,
+            'sku' => 5,
+        ];
+
+        $products = factory(Product::class)->create($attributes);
+
+        $response = $this->delete("/api/products/{$products->id}");
+
+        $response->assertJson([
+            'status' => 'success',
+            'message' => 'Delete Successfully',
+            'data' => [
+                'id' => $products->id,
+            ]
+        ]);
+
+        $this->assertDatabaseMissing('products', $attributes);
+    }
+
 }

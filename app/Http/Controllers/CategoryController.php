@@ -38,4 +38,17 @@ class CategoryController extends Controller
     }
 
 
+    public function delete(Category $category)
+    {
+        $category->delete();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Delete Successfully',
+            'data' => [
+                'id' => $category->id,
+            ],
+        ]);
+    }
+
 }
